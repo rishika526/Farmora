@@ -47,105 +47,79 @@
 }
 
 :root {
-  /* Earthy, Organic Palette */
-  
-  /* Creamy Off-White Background */
+  /* Sleek Minimalist Palette */
   --background: 60 20% 98%;
-  /* Deep Forest Green Text */
-  --foreground: 150 40% 10%;
+  --foreground: 150 40% 12%;
 
-  /* White cards with subtle warmth */
-  --card: 60 20% 99%;
-  --card-foreground: 150 40% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 150 40% 12%;
 
-  --popover: 60 20% 99%;
-  --popover-foreground: 150 40% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 150 40% 12%;
 
-  /* Leaf Green Primary */
-  --primary: 146 65% 35%;
+  /* High Contrast Leaf Green */
+  --primary: 155 100% 23%;
   --primary-foreground: 0 0% 100%;
 
-  /* Pale Earth Secondary */
-  --secondary: 35 30% 92%;
-  --secondary-foreground: 146 65% 20%;
+  --secondary: 60 20% 96%;
+  --secondary-foreground: 155 100% 15%;
 
-  /* Muted Greens/Greys */
-  --muted: 150 10% 94%;
-  --muted-foreground: 150 10% 40%;
+  --muted: 150 10% 96%;
+  --muted-foreground: 150 5% 45%;
 
-  /* Terracotta Accent */
-  --accent: 24 85% 55%;
+  --accent: 155 100% 23%;
   --accent-foreground: 0 0% 100%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 150 20% 90%;
-  --input: 150 20% 90%;
-  --ring: 146 65% 35%;
+  --border: 150 15% 92%;
+  --input: 150 15% 92%;
+  --ring: 155 100% 23%;
 
-  --radius: 0.75rem;
+  --radius: 1rem;
 
-  --chart-1: 146 65% 35%;
-  --chart-2: 24 85% 55%;
-  --chart-3: 35 80% 50%;
-  --chart-4: 180 50% 40%;
-  --chart-5: 200 60% 40%;
+  --chart-1: 155 100% 23%;
+  --chart-2: 155 100% 33%;
+  --chart-3: 155 100% 43%;
+  --chart-4: 155 100% 53%;
+  --chart-5: 155 100% 63%;
 
   --sidebar: 60 20% 98%;
-  --sidebar-foreground: 150 40% 10%;
-  --sidebar-primary: 146 65% 35%;
+  --sidebar-foreground: 150 40% 12%;
+  --sidebar-primary: 155 100% 23%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 35 30% 92%;
-  --sidebar-accent-foreground: 146 65% 20%;
-  --sidebar-border: 150 20% 90%;
-  --sidebar-ring: 146 65% 35%;
+  --sidebar-accent: 60 20% 96%;
+  --sidebar-accent-foreground: 155 100% 15%;
+  --sidebar-border: 150 15% 92%;
+  --sidebar-ring: 155 100% 23%;
 }
 
 .dark {
-  /* Dark Earth Mode */
-  --background: 150 40% 5%;
-  --foreground: 60 20% 90%;
+  --background: 150 40% 4%;
+  --foreground: 60 10% 94%;
 
-  --card: 150 40% 8%;
-  --card-foreground: 60 20% 90%;
+  --card: 150 30% 6%;
+  --card-foreground: 60 10% 94%;
 
-  --popover: 150 40% 8%;
-  --popover-foreground: 60 20% 90%;
+  --popover: 150 30% 6%;
+  --popover-foreground: 60 10% 94%;
 
-  --primary: 146 50% 45%;
+  --primary: 155 80% 40%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 150 20% 15%;
-  --secondary-foreground: 60 20% 90%;
+  --secondary: 150 20% 10%;
+  --secondary-foreground: 60 10% 94%;
 
-  --muted: 150 20% 15%;
-  --muted-foreground: 150 10% 60%;
+  --muted: 150 20% 10%;
+  --muted-foreground: 150 10% 65%;
 
-  --accent: 24 70% 50%;
+  --accent: 155 80% 40%;
   --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-
-  --border: 150 20% 20%;
-  --input: 150 20% 20%;
-  --ring: 146 50% 45%;
-
-  --chart-1: 146 50% 45%;
-  --chart-2: 24 70% 50%;
-  --chart-3: 35 70% 40%;
-  --chart-4: 180 40% 40%;
-  --chart-5: 200 50% 40%;
-  
-  --sidebar: 150 40% 5%;
-  --sidebar-foreground: 60 20% 90%;
-  --sidebar-primary: 146 50% 45%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 150 20% 15%;
-  --sidebar-accent-foreground: 60 20% 90%;
-  --sidebar-border: 150 20% 20%;
-  --sidebar-ring: 146 50% 45%;
+  --border: 150 20% 15%;
+  --input: 150 20% 15%;
+  --ring: 155 80% 40%;
 }
 
 @layer base {
@@ -156,6 +130,6 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    @apply font-sans font-bold tracking-tight;
   }
 }

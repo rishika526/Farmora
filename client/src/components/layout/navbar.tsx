@@ -12,9 +12,10 @@ export default function Navbar() {
   const navItems = [
     { href: "/", label: "Home", icon: Sprout },
     { href: "/tutorials", label: "Tutorials", icon: Video },
-    { href: "/kits", label: "DIY Kits", icon: ShoppingBag },
     { href: "/advisor", label: "AI Advisor", icon: Brain },
-    { href: "/creator", label: "Creator Hub", icon: User },
+    { href: "/kits", label: "Shop Kits", icon: ShoppingBag },
+    { href: "/creator", label: "Creator", icon: User },
+    { href: "/about", label: "About", icon: Sprout },
   ];
 
   return (
