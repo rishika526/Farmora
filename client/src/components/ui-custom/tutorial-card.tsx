@@ -1,18 +1,24 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Eye, PlayCircle } from "lucide-react";
+import { Clock, Eye, PlayCircle, Sparkles } from "lucide-react";
 import { Tutorial } from "@/mock/data";
 import { Link } from "wouter";
 
 interface TutorialCardProps {
   tutorial: Tutorial;
+  quantumSelected?: boolean;
 }
 
-export default function TutorialCard({ tutorial }: TutorialCardProps) {
+export default function TutorialCard({ tutorial, quantumSelected }: TutorialCardProps) {
   return (
     <Link href={`/tutorials/${tutorial.id}`}>
-      <a className="group block">
-        <div className="relative aspect-video overflow-hidden rounded-2xl bg-muted mb-4 shadow-sm">
+      <a className={`group block relative p-3 rounded-[1.5rem] transition-all duration-300 ${quantumSelected ? 'bg-primary/5 shadow-[0_0_20px_rgba(0,119,51,0.08)] border border-primary/20' : 'hover:bg-muted/50'}`}>
+        {quantumSelected && (
+          <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
+            <Sparkles className="w-3 h-3" /> Quantum Pick
+          </div>
+        )}
+        <div className="relative aspect-video overflow-hidden rounded-[1rem] bg-muted mb-4 shadow-sm">
           <img 
             src={tutorial.thumbnail} 
             alt={tutorial.title}

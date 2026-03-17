@@ -1,15 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, PlayCircle, Sprout, ShoppingBag, Brain, Leaf, Users, Check, Globe, Award } from "lucide-react";
+import { ArrowRight, PlayCircle, Sprout, ShoppingBag, Brain, Leaf, Users, Check, Globe, Award, Sparkles, Shuffle } from "lucide-react";
 import { Link } from "wouter";
 import TutorialCard from "@/components/ui-custom/tutorial-card";
 import KitCard from "@/components/ui-custom/kit-card";
 import { MOCK_TUTORIALS, MOCK_KITS } from "@/mock/data";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import QuantumToggle from "@/components/ui-custom/quantum-toggle";
+import { useState } from "react";
 
 export default function Home() {
+  const [quantumMode, setQuantumMode] = useState(false);
   const featuredTutorials = MOCK_TUTORIALS.slice(0, 3);
   const featuredKits = MOCK_KITS.slice(0, 4);
+
+  // Mock Quantum Reordering
+  const displayTutorials = quantumMode 
+    ? [...featuredTutorials].reverse() 
+    : featuredTutorials;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -79,6 +87,19 @@ export default function Home() {
                <p className="text-sm font-bold leading-tight">Nitrogen levels optimal for leafy greens.</p>
              </div>
           </div>
+
+          {/* Quantum Random Feature Badge */}
+          <div className="absolute top-8 -right-8 bg-white p-4 rounded-2xl shadow-xl border border-border/50 z-10 hidden md:block">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <Shuffle className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Quantum Pick</p>
+                <p className="text-sm font-bold">Creator of the Day</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -112,23 +133,40 @@ export default function Home() {
       </section>
 
       {/* Popular Guides */}
-      <section className="py-24 bg-background">
-        <div className="container px-4">
-          <div className="flex items-center justify-between mb-16">
+      <section className="py-24 bg-background relative overflow-hidden">
+        {quantumMode && (
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
+        )}
+        <div className="container px-4 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div className="space-y-2">
-              <h2 className="text-5xl font-bold tracking-tight">Popular Guides</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-5xl font-bold tracking-tight">Popular Guides</h2>
+              </div>
               <p className="text-xl text-muted-foreground">Trending organic farming techniques.</p>
             </div>
-            <Link href="/tutorials">
-              <Button variant="ghost" className="hidden md:flex items-center gap-2 text-lg font-medium hover:bg-transparent hover:text-primary">
-                View All <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
+            
+            <div className="flex items-center gap-4">
+              <QuantumToggle enabled={quantumMode} onToggle={setQuantumMode} />
+              <Link href="/tutorials">
+                <Button variant="ghost" className="hidden md:flex items-center gap-2 text-lg font-medium hover:bg-transparent hover:text-primary">
+                  View All <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredTutorials.map(tutorial => (
-              <TutorialCard key={tutorial.id} tutorial={tutorial} />
+            {displayTutorials.map((tutorial, idx) => (
+              <motion.div 
+                key={tutorial.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+              >
+                <TutorialCard tutorial={tutorial} quantumSelected={quantumMode && idx === 0} />
+              </motion.div>
             ))}
           </div>
         </div>
