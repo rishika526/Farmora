@@ -1,4 +1,4 @@
-import { Sprout, Mail, Twitter, Instagram, Facebook } from "lucide-react";
+import { Sprout, Twitter, Instagram, Facebook } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Footer() {
@@ -7,31 +7,30 @@ export default function Footer() {
       <div className="container px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-6">
-            <Link href="/">
-              <a className="flex items-center gap-2 font-bold text-2xl text-primary">
-                <Sprout className="h-8 w-8" />
-                <span>Farmora</span>
-              </a>
+            <Link href="/" className="flex items-center gap-2 font-bold text-2xl text-primary">
+              <Sprout className="h-8 w-8" />
+              <span>Farmora</span>
             </Link>
             <p className="text-muted-foreground leading-relaxed max-w-xs">
               Empowering growers with AI-driven organic farming wisdom. From soil to solution, we make sustainability practical.
             </p>
           </div>
-          
+
           <div className="space-y-6">
             <h4 className="font-bold text-lg">Platform</h4>
             <ul className="space-y-4 text-muted-foreground">
-              <li><Link href="/tutorials"><a className="hover:text-primary transition-colors">Tutorials</a></Link></li>
-              <li><Link href="/advisor"><a className="hover:text-primary transition-colors">AI Advisor</a></Link></li>
-              <li><Link href="/kits"><a className="hover:text-primary transition-colors">Marketplace</a></Link></li>
-              <li><Link href="/upload"><a className="hover:text-primary transition-colors">Upload</a></Link></li>
+              <li><Link href="/tutorials" className="hover:text-primary transition-colors">Tutorials</Link></li>
+              <li><Link href="/advisor" className="hover:text-primary transition-colors">AI Advisor</Link></li>
+              <li><Link href="/kits" className="hover:text-primary transition-colors">Marketplace</Link></li>
+              <li><Link href="/farm-plan" className="hover:text-primary transition-colors">Farm Planner</Link></li>
+              <li><Link href="/upload" className="hover:text-primary transition-colors">Upload</Link></li>
             </ul>
           </div>
 
           <div className="space-y-6">
             <h4 className="font-bold text-lg">Resources</h4>
             <ul className="space-y-4 text-muted-foreground">
-              <li><Link href="/about"><a className="hover:text-primary transition-colors">About Us</a></Link></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">Community Guidelines</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
@@ -53,7 +52,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        
+
         <div className="mt-16 pt-8 border-t border-border/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <p>© 2026 Farmora Inc. All rights reserved.</p>
         </div>

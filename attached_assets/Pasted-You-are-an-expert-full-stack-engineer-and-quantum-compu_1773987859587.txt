@@ -1,0 +1,160 @@
+You are an expert full-stack engineer and quantum computing developer.
+
+My existing project "Farmora" already has:
+- React + Tailwind frontend
+- Node.js + Express backend
+- A Quantum Optimization Engine (QUBO + annealing + QAOA demo)
+
+Now EXTEND the system by implementing TWO additional features that MUST reuse the quantum-inspired logic.
+
+--------------------------------------------------
+FEATURE 1: GRAPH-BASED DISCOVERY (QUANTUM-INSPIRED)
+--------------------------------------------------
+
+GOAL:
+Help users discover related tutorials, kits, and creators using a graph-based approach inspired by quantum walks.
+
+BACKEND IMPLEMENTATION:
+
+1) Build a Graph:
+- Nodes:
+  - tutorials
+  - kits
+  - creators
+- Each node should have:
+  - id
+  - type (tutorial/kit/creator)
+  - tags (array)
+  - difficulty/category
+
+2) Create Edges:
+- Connect nodes if:
+  - they share tags
+  - belong to same category
+- Assign weights based on similarity score
+
+3) Quantum-Walk Inspired Scoring:
+- Implement a classical approximation:
+  - Start from a selected node
+  - Perform multiple weighted walks (like random walk)
+  - Add variation (simulate "superposition effect" by exploring multiple paths simultaneously)
+- Score nodes based on visit frequency
+
+4) API Endpoint:
+- GET /quantum/related/:id
+- Returns:
+  - top 6–8 related nodes (mixed types)
+
+--------------------------------------------------
+FRONTEND IMPLEMENTATION:
+
+- On:
+  - Tutorial page
+  - Kit page
+- Add section:
+  "Related Content (Quantum Discovery)"
+
+- Add another section:
+  "Explore Similar Topics"
+
+- UI:
+  - horizontal scroll cards
+  - show tag badges
+  - subtle glow effect for "Quantum Powered"
+
+--------------------------------------------------
+FEATURE 2: FARM TASK PLANNER (QUBO-BASED)
+--------------------------------------------------
+
+GOAL:
+Generate a simple optimized 5–7 day organic farming plan.
+
+INPUT:
+- crop type (e.g., tomato, spinach)
+- duration (5–7 days)
+
+TASK TYPES:
+- watering
+- composting
+- pest control
+- sunlight exposure
+- soil check
+
+BACKEND IMPLEMENTATION:
+
+1) Model as QUBO:
+- Variables:
+  - task_day_i = 1 if task assigned on that day
+- Objective:
+  - maximize coverage of all important tasks
+  - ensure proper spacing (e.g., watering not repeated too close)
+  - include at least 1 compost + 1 pest control
+
+2) Solve using:
+- existing quantum-inspired annealing solver
+
+3) API Endpoint:
+- POST /quantum/farm-plan
+- Input:
+  {
+    "crop": "tomato",
+    "days": 7
+  }
+- Output:
+  - array of daily tasks
+
+--------------------------------------------------
+FRONTEND IMPLEMENTATION:
+
+Create new section/page:
+"My Farm Plan"
+
+UI Elements:
+- dropdown: select crop
+- select duration (5–7 days)
+- button: "Generate Quantum Plan"
+
+Display:
+- day-wise cards:
+  Day 1: Watering + Soil Check
+  Day 2: Composting
+  etc.
+
+Add label:
+"Quantum Optimized Plan"
+
+Optional:
+- icons for tasks (watering, compost, etc.)
+- clean timeline layout
+
+--------------------------------------------------
+INTEGRATION RULES
+--------------------------------------------------
+
+- Use the SAME Quantum Optimization Engine
+- Do NOT duplicate logic
+- Keep functions modular
+
+--------------------------------------------------
+UI/UX REQUIREMENTS
+--------------------------------------------------
+
+- Match existing Farmora green theme
+- Smooth animations
+- Clean cards with rounded corners
+- Add tags:
+  - "Quantum Inspired"
+  - "Smart Discovery"
+
+--------------------------------------------------
+OUTPUT REQUIREMENTS
+--------------------------------------------------
+
+- Fully working backend APIs
+- Integrated frontend components
+- Sample data for testing
+- Comments explaining:
+  - graph logic
+  - QUBO constraints (simple terms)
+
+Ensure everything runs smoothly with existing system.

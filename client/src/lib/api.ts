@@ -14,6 +14,8 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+// ── SHARED TYPES ─────────────────────────────────────────────────────────────
+
 export interface Tutorial {
   id: string;
   title: string;
@@ -59,11 +61,7 @@ export interface QuantumResult<T> {
   scores: number[];
   solverUsed: string;
   executionTimeMs: number;
-  metadata: {
-    annealingSteps: number;
-    temperature: number;
-    objectiveValue: number;
-  };
+  metadata: { annealingSteps: number; temperature: number; objectiveValue: number };
 }
 
 export interface QAOAResult {
@@ -73,11 +71,42 @@ export interface QAOAResult {
   executionTimeMs: number;
 }
 
-export interface FarmPlan {
-  plan: { day: number; task: string; type: string; priority: number }[];
+export type GraphNode =
+  | { type: "tutorial"; data: Tutorial }
+  | { type: "kit"; data: Kit }
+  | { type: "creator"; data: Creator };
+
+export interface QuantumRelatedResult {
+  sourceType: string;
+  sourceId: string;
+  related: GraphNode[];
+  scores: number[];
   solverUsed: string;
   executionTimeMs: number;
+  edgeCount: number;
 }
+
+export interface FarmDayTask {
+  id: string;
+  name: string;
+  icon: string;
+  type: string;
+  priority: number;
+}
+
+export interface FarmPlanDay {
+  day: number;
+  tasks: FarmDayTask[];
+}
+
+export interface FarmPlan {
+  plan: FarmPlanDay[];
+  solverUsed: string;
+  executionTimeMs: number;
+  quboConstraints: string[];
+}
+
+// ── QUERY OPTIONS ─────────────────────────────────────────────────────────────
 
 export function tutorialsQuery(category?: string, search?: string) {
   const params = new URLSearchParams();
@@ -114,6 +143,16 @@ export function creatorsQuery() {
   });
 }
 
+export function quantumRelatedQuery(type: "tutorial" | "kit" | "creator", id: string) {
+  return queryOptions({
+    queryKey: ["quantum-related", type, id],
+    queryFn: () => fetchJSON<QuantumRelatedResult>(`${API_BASE}/quantum/related/${type}/${id}`),
+    enabled: !!id,
+  });
+}
+
+// ── MUTATION HELPERS ─────────────────────────────────────────────────────────
+
 export async function quantumRecommend(type: "tutorials" | "kits", preferences: string[] = [], maxItems = 8) {
   return fetchJSON<QuantumResult<Tutorial | Kit>>(`${API_BASE}/quantum/recommend`, {
     method: "POST",
@@ -138,16 +177,13 @@ export async function quantumRandomCreator() {
   return fetchJSON<{ creator: Creator | null; method: string }>(`${API_BASE}/quantum/random`);
 }
 
-export async function quantumFarmPlan(cropType: string, durationDays = 7) {
+export async function quantumFarmPlan(crop: string, days = 7) {
   return fetchJSON<FarmPlan>(`${API_BASE}/quantum/farm-plan`, {
     method: "POST",
-    body: JSON.stringify({ cropType, durationDays }),
+    body: JSON.stringify({ crop, days }),
   });
 }
 
 export async function createTutorial(data: any) {
-  return fetchJSON<Tutorial>(`${API_BASE}/tutorials`, {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  return fetchJSON<Tutorial>(`${API_BASE}/tutorials`, { method: "POST", body: JSON.stringify(data) });
 }

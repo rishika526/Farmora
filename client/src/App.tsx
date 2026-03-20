@@ -15,6 +15,7 @@ import UploadPage from "@/pages/upload";
 import AdvisorPage from "@/pages/advisor";
 import KitsPage from "@/pages/kits";
 import CreatorDashboard from "@/pages/creator";
+import FarmPlanPage from "@/pages/farm-plan";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
           <Route path="/advisor" component={AdvisorPage} />
           <Route path="/kits" component={KitsPage} />
           <Route path="/creator" component={CreatorDashboard} />
+          <Route path="/farm-plan" component={FarmPlanPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
