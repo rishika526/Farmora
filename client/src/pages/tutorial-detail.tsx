@@ -169,7 +169,7 @@ export default function TutorialDetail() {
                 <h3 className="font-bold text-2xl">Shop the Look</h3>
                 <Badge variant="outline" className="bg-white border-primary/20 text-primary">Optimized Cart</Badge>
               </div>
-              <p className="text-muted-foreground">Quantum-optimized kit bundle matched to this tutorial.</p>
+              <p className="text-muted-foreground">AI-matched kit bundle for this tutorial.</p>
               <div className="space-y-4">
                 {relatedKits.map(kit => (
                   <div key={kit.id} className="flex gap-4 items-center p-3 rounded-2xl bg-white shadow-sm border border-border/50 hover:border-primary/30 transition-colors">

@@ -104,11 +104,11 @@ export default function FarmPlanPage() {
         <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-5xl font-bold tracking-tight">My Farm Plan</h1>
           <span className="bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-primary/20 flex items-center gap-1">
-            <Cpu className="w-3 h-3" /> QUBO Optimized
+            <Cpu className="w-3 h-3" /> AI Powered
           </span>
         </div>
         <p className="text-xl text-muted-foreground max-w-2xl">
-          Generate a quantum-optimised organic farming schedule. Our QUBO solver maximises task coverage while ensuring proper spacing and essential care steps.
+          Generate a smart, personalised organic farming schedule. Our AI maximises task coverage while ensuring proper spacing and essential care steps.
         </p>
       </div>
 
@@ -178,12 +178,12 @@ export default function FarmPlanPage() {
             {loading ? (
               <>
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Running QUBO Solver...
+                Generating Plan...
               </>
             ) : (
               <>
                 <Cpu className="w-5 h-5" />
-                Generate Quantum Plan
+                Generate My Plan
                 <ChevronRight className="w-5 h-5" />
               </>
             )}
@@ -209,16 +209,16 @@ export default function FarmPlanPage() {
               <div className="space-y-1">
                 <p className="font-bold text-xl flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-primary" />
-                  Quantum Optimized Plan — {selectedCrop.label}
+                  Your Smart Plan — {selectedCrop.label}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Solved in {plan.executionTimeMs}ms via {plan.solverUsed.replace(/_/g, " ")} · {plan.plan.length} days scheduled
+                  Generated in {plan.executionTimeMs}ms · {plan.plan.length} days scheduled
                 </p>
               </div>
-              <div className="text-xs space-y-1">
-                {plan.quboConstraints.map((c, i) => (
-                  <p key={i} className="font-mono text-muted-foreground">{c}</p>
-                ))}
+              <div className="text-xs space-y-1 text-right">
+                <p className="font-mono text-muted-foreground">Max 2 tasks per day</p>
+                <p className="font-mono text-muted-foreground">Proper rest gaps enforced</p>
+                <p className="font-mono text-muted-foreground">Key tasks always included</p>
               </div>
             </div>
 
@@ -253,7 +253,7 @@ export default function FarmPlanPage() {
         <div className="text-center py-20 text-muted-foreground">
           <CalendarDays className="w-16 h-16 mx-auto mb-4 opacity-20" />
           <p className="text-lg font-medium">Select a crop and duration, then generate your plan.</p>
-          <p className="text-sm mt-2">The QUBO solver will optimise task coverage, spacing, and crop-specific priorities.</p>
+          <p className="text-sm mt-2">The AI will optimise task coverage, spacing, and crop-specific priorities.</p>
         </div>
       )}
     </div>

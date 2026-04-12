@@ -126,9 +126,9 @@ export default function UploadPage() {
                    </div>
                    
                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
-                     <h4 className="font-medium text-primary">Quantum Optimization</h4>
+                     <h4 className="font-medium text-primary">AI Analysis</h4>
                      <p className="text-xs text-muted-foreground">
-                       Our quantum-inspired algorithm will analyze your video to extract the most effective farming patterns for our knowledge graph.
+                       Our smart AI will analyze your video to extract the most effective farming patterns and surface them across our knowledge graph.
                      </p>
                    </div>
                 </div>

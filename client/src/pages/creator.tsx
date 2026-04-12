@@ -44,7 +44,7 @@ export default function CreatorDashboard() {
         <div className="flex items-center gap-3">
           <h1 className="text-4xl font-bold tracking-tight">Creator Dashboard</h1>
           <span className="bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full flex items-center gap-1 border border-primary/20">
-            <Sparkles className="w-3 h-3" /> QUBO Optimized
+            <Sparkles className="w-3 h-3" /> AI Ranked
           </span>
         </div>
         <p className="text-xl text-muted-foreground">Track your impact and earnings.</p>

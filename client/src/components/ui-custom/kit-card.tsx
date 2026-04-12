@@ -5,18 +5,18 @@ import type { Kit } from "@/lib/api";
 
 interface KitCardProps {
   kit: Kit;
-  quantumSelected?: boolean;
+  recommended?: boolean;
 }
 
-export default function KitCard({ kit, quantumSelected }: KitCardProps) {
+export default function KitCard({ kit, recommended }: KitCardProps) {
   return (
     <div
-      className={`group cursor-pointer relative p-3 rounded-[1.5rem] transition-all duration-300 ${quantumSelected ? "bg-primary/5 shadow-[0_0_20px_rgba(0,119,51,0.08)] border border-primary/20" : "hover:bg-muted/50"}`}
+      className={`group cursor-pointer relative p-3 rounded-[1.5rem] transition-all duration-300 ${recommended ? "bg-primary/5 border border-primary/20" : "hover:bg-muted/50"}`}
       data-testid={`card-kit-${kit.id}`}
     >
-      {quantumSelected && (
-        <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
-          <Sparkles className="w-3 h-3" /> Quantum Pick
+      {recommended && (
+        <div className="absolute -top-3 -right-3 z-10 bg-white dark:bg-card border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-sm flex items-center gap-1">
+          <Sparkles className="w-3 h-3" /> Recommended
         </div>
       )}
       <div className="relative aspect-[4/3] overflow-hidden rounded-[1rem] bg-muted mb-4 shadow-sm">

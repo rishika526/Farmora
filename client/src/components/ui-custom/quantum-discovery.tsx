@@ -114,20 +114,14 @@ export default function QuantumDiscovery({ sourceType, sourceId }: QuantumDiscov
             <Network className="h-5 w-5 text-primary" />
             <h3 className="text-2xl font-bold">Related Content</h3>
             <span className="text-[10px] bg-primary/10 text-primary font-bold uppercase tracking-wider px-2 py-1 rounded-full border border-primary/20 flex items-center gap-1">
-              <Sparkles className="w-3 h-3" /> Quantum Discovery
+              <Sparkles className="w-3 h-3" /> AI Recommended
             </span>
           </div>
           <p className="text-sm text-muted-foreground max-w-xl">
-            Discovered via quantum-walk scoring on a tag similarity graph —
-            {data ? ` ${data.edgeCount} edges explored in ${data.executionTimeMs}ms` : " analysing graph..."}
+            Handpicked based on topic similarity and category match.
+            {data ? ` ${data.edgeCount} connections analysed in ${data.executionTimeMs}ms.` : ""}
           </p>
         </div>
-
-        {data && (
-          <div className="text-xs font-mono bg-muted/50 rounded-lg px-3 py-2 text-muted-foreground hidden md:block">
-            solver: {data.solverUsed}
-          </div>
-        )}
       </div>
 
       {isLoading ? (
@@ -150,7 +144,7 @@ export default function QuantumDiscovery({ sourceType, sourceId }: QuantumDiscov
 
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Tag className="w-3.5 h-3.5" />
-        <span>Smart Discovery uses Jaccard tag similarity + category matching to build the graph, then scores nodes via quantum-walk amplitude propagation.</span>
+        <span>Smart Discovery analyses tag similarity and category overlap to surface the most relevant tutorials, kits, and creators for you.</span>
       </div>
     </section>
   );
