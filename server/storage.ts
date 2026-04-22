@@ -40,7 +40,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTutorials(category?: string, search?: string): Promise<Tutorial[]> {
-    let query = db.select().from(tutorials);
     const conditions = [];
 
     if (category && category !== "all") {
@@ -51,10 +50,14 @@ export class DatabaseStorage implements IStorage {
     }
 
     if (conditions.length > 0) {
-      query = query.where(sql`${sql.join(conditions, sql` AND `)}`);
+      return db
+        .select()
+        .from(tutorials)
+        .where(sql`${sql.join(conditions, sql` AND `)}`)
+        .orderBy(desc(tutorials.views));
     }
 
-    return query.orderBy(desc(tutorials.views));
+    return db.select().from(tutorials).orderBy(desc(tutorials.views));
   }
 
   async getTutorial(id: string): Promise<Tutorial | undefined> {

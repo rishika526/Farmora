@@ -2,6 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { Star, Sparkles } from "lucide-react";
 import { formatRupee } from "@/lib/utils";
 import type { Kit } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/lib/cart";
+import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 interface KitCardProps {
   kit: Kit;
@@ -9,6 +13,17 @@ interface KitCardProps {
 }
 
 export default function KitCard({ kit, recommended }: KitCardProps) {
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+
+  function handleAddToCart() {
+    addToCart(kit);
+    toast({
+      title: "Added to cart",
+      description: `${kit.name} was added to your cart.`,
+    });
+  }
+
   return (
     <div
       className={`group cursor-pointer relative p-3 rounded-[1.5rem] transition-all duration-300 ${recommended ? "bg-primary/5 border border-primary/20" : "hover:bg-muted/50"}`}
@@ -57,6 +72,14 @@ export default function KitCard({ kit, recommended }: KitCardProps) {
         </div>
 
         <p className="text-sm text-muted-foreground line-clamp-2">{kit.description}</p>
+        <div className="flex items-center gap-2 pt-2">
+          <Button className="flex-1" onClick={handleAddToCart}>
+            Add to Cart
+          </Button>
+          <Link href="/cart">
+            <Button variant="outline">View Cart</Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
