@@ -1,6 +1,6 @@
 import { type User, type InsertUser, type Tutorial, type InsertTutorial, type Kit, type InsertKit, type Creator, type InsertCreator, users, tutorials, kits, creators, quantumLogs } from "@shared/schema";
 import { db } from "./db";
-import { eq, ilike, sql, desc, asc } from "drizzle-orm";
+import { eq, ilike, sql, desc, or } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -46,7 +46,13 @@ export class DatabaseStorage implements IStorage {
       conditions.push(ilike(tutorials.category, category));
     }
     if (search) {
-      conditions.push(ilike(tutorials.title, `%${search}%`));
+      conditions.push(
+        or(
+          ilike(tutorials.title, `%${search}%`),
+          ilike(tutorials.creator, `%${search}%`),
+          ilike(sql`COALESCE(${tutorials.description}, '')`, `%${search}%`),
+        )!,
+      );
     }
 
     if (conditions.length > 0) {
@@ -54,10 +60,10 @@ export class DatabaseStorage implements IStorage {
         .select()
         .from(tutorials)
         .where(sql`${sql.join(conditions, sql` AND `)}`)
-        .orderBy(desc(tutorials.views));
+        .orderBy(desc(tutorials.createdAt), desc(tutorials.views));
     }
 
-    return db.select().from(tutorials).orderBy(desc(tutorials.views));
+    return db.select().from(tutorials).orderBy(desc(tutorials.createdAt), desc(tutorials.views));
   }
 
   async getTutorial(id: string): Promise<Tutorial | undefined> {
@@ -66,12 +72,56 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTutorial(tutorial: InsertTutorial): Promise<Tutorial> {
-    const [created] = await db.insert(tutorials).values(tutorial).returning();
-    return created;
+    return db.transaction(async (tx) => {
+      const [created] = await tx
+        .insert(tutorials)
+        .values({
+          ...tutorial,
+          description: tutorial.description?.trim() || null,
+          language: tutorial.language || "English",
+        })
+        .returning();
+
+      const [existingCreator] = await tx
+        .select()
+        .from(creators)
+        .where(sql`lower(${creators.name}) = lower(${tutorial.creator})`);
+
+      if (existingCreator) {
+        await tx
+          .update(creators)
+          .set({
+            tutorialCount: sql`${creators.tutorialCount} + 1`,
+          })
+          .where(eq(creators.id, existingCreator.id));
+      } else {
+        await tx.insert(creators).values({
+          name: tutorial.creator,
+          category: tutorial.category,
+          tutorialCount: 1,
+          totalViews: 0,
+          engagementScore: 60,
+          isNew: true,
+        });
+      }
+
+      return created;
+    });
   }
 
   async incrementTutorialViews(id: string): Promise<void> {
-    await db.update(tutorials).set({ views: sql`${tutorials.views} + 1` }).where(eq(tutorials.id, id));
+    const [updatedTutorial] = await db
+      .update(tutorials)
+      .set({ views: sql`${tutorials.views} + 1` })
+      .where(eq(tutorials.id, id))
+      .returning({ creator: tutorials.creator });
+
+    if (!updatedTutorial) return;
+
+    await db
+      .update(creators)
+      .set({ totalViews: sql`${creators.totalViews} + 1` })
+      .where(sql`lower(${creators.name}) = lower(${updatedTutorial.creator})`);
   }
 
   async getKits(search?: string): Promise<Kit[]> {

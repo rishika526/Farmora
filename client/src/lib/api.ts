@@ -20,6 +20,7 @@ export interface Tutorial {
   id: string;
   title: string;
   thumbnail: string;
+  videoUrl: string | null;
   category: string;
   duration: string;
   difficulty: string;
@@ -27,7 +28,21 @@ export interface Tutorial {
   creator: string;
   tags: string[];
   description: string | null;
+  language: string;
   createdAt: string | null;
+}
+
+export interface CreateTutorialInput {
+  title: string;
+  thumbnail: string;
+  videoUrl: string;
+  category: string;
+  duration: string;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  creator: string;
+  tags: string[];
+  description?: string | null;
+  language?: string;
 }
 
 export interface Kit {
@@ -184,6 +199,6 @@ export async function quantumFarmPlan(crop: string, days = 7) {
   });
 }
 
-export async function createTutorial(data: any) {
+export async function createTutorial(data: CreateTutorialInput) {
   return fetchJSON<Tutorial>(`${API_BASE}/tutorials`, { method: "POST", body: JSON.stringify(data) });
 }
