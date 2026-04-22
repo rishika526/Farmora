@@ -9,10 +9,27 @@ import { useQuery } from "@tanstack/react-query";
 import { tutorialQuery, kitsQuery } from "@/lib/api";
 import { formatRupee } from "@/lib/utils";
 import QuantumDiscovery from "@/components/ui-custom/quantum-discovery";
+import { useState } from "react";
+import { useCart } from "@/lib/cart";
+import { useToast } from "@/hooks/use-toast";
+
+const tutorialVideos: Record<string, string> = {
+  t1: "https://cdn.coverr.co/videos/coverr-gardening-day-1571/1080p.mp4",
+  t2: "https://cdn.coverr.co/videos/coverr-garden-plants-close-up-6315/1080p.mp4",
+  t3: "https://cdn.coverr.co/videos/coverr-plant-growth-time-lapse-1577/1080p.mp4",
+  t4: "https://cdn.coverr.co/videos/coverr-harvesting-fresh-vegetables-1653/1080p.mp4",
+  t5: "https://cdn.coverr.co/videos/coverr-watering-plants-1560/1080p.mp4",
+  t6: "https://cdn.coverr.co/videos/coverr-preparing-soil-1609/1080p.mp4",
+  t7: "https://cdn.coverr.co/videos/coverr-garden-bed-overview-8305/1080p.mp4",
+  t8: "https://cdn.coverr.co/videos/coverr-a-man-holding-a-plant-pot-5226/1080p.mp4",
+};
 
 export default function TutorialDetail() {
   const params = useParams();
   const id = params.id || "t1";
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   const { data: tutorial, isLoading } = useQuery(tutorialQuery(id));
   const { data: allKits = [] } = useQuery(kitsQuery());
 
@@ -29,6 +46,23 @@ export default function TutorialDetail() {
   }
 
   const relatedKits = allKits.slice(0, 2);
+  const videoSrc = tutorialVideos[id];
+
+  function handleAddKitToCart(kit: (typeof relatedKits)[number]) {
+    addToCart(kit);
+    toast({
+      title: "Added to cart",
+      description: `${kit.name} was added to your cart.`,
+    });
+  }
+
+  function handleAddBundleToCart() {
+    relatedKits.forEach((kit) => addToCart(kit));
+    toast({
+      title: "Bundle added to cart",
+      description: `${relatedKits.length} items were added.`,
+    });
+  }
 
   return (
     <div className="container px-4 py-8 min-h-screen">
@@ -37,16 +71,36 @@ export default function TutorialDetail() {
         <div className="lg:col-span-2 space-y-8">
           {/* Video hero */}
           <div className="aspect-video bg-black rounded-[2rem] overflow-hidden relative group shadow-xl">
-            <img src={tutorial.thumbnail} alt={tutorial.title} className="w-full h-full object-cover opacity-60" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Button
-                size="icon"
-                className="h-20 w-20 rounded-full bg-white/20 backdrop-blur-md hover:bg-white/30 text-white border-2 border-white/50 transition-transform hover:scale-110"
-                data-testid="button-play-video"
-              >
-                <Play className="h-10 w-10 ml-2 fill-current" />
-              </Button>
-            </div>
+            {!isPlaying || !videoSrc ? (
+              <>
+                <img src={tutorial.thumbnail} alt={tutorial.title} className="w-full h-full object-cover opacity-60" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Button
+                    size="icon"
+                    className="h-20 w-20 rounded-full bg-white/20 backdrop-blur-md hover:bg-white/30 text-white border-2 border-white/50 transition-transform hover:scale-110"
+                    data-testid="button-play-video"
+                    onClick={() => setIsPlaying(true)}
+                  >
+                    <Play className="h-10 w-10 ml-2 fill-current" />
+                  </Button>
+                </div>
+                {!videoSrc && (
+                  <div className="absolute top-4 right-4">
+                    <Badge variant="secondary">Video source unavailable</Badge>
+                  </div>
+                )}
+              </>
+            ) : (
+              <video
+                className="w-full h-full object-cover"
+                controls
+                autoPlay
+                playsInline
+                poster={tutorial.thumbnail}
+                src={videoSrc}
+                data-testid="video-tutorial-player"
+              />
+            )}
             <div className="absolute bottom-4 left-4">
               <Badge className="bg-primary text-white border-none">
                 <Sparkles className="w-3 h-3 mr-1" /> AI Summarized
@@ -167,22 +221,30 @@ export default function TutorialDetail() {
             <CardContent className="p-8 space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-2xl">Shop the Look</h3>
-                <Badge variant="outline" className="bg-white border-primary/20 text-primary">Optimized Cart</Badge>
+                <Badge variant="outline" className="bg-card border-primary/30 text-primary">Optimized Cart</Badge>
               </div>
               <p className="text-muted-foreground">AI-matched kit bundle for this tutorial.</p>
               <div className="space-y-4">
                 {relatedKits.map(kit => (
-                  <div key={kit.id} className="flex gap-4 items-center p-3 rounded-2xl bg-white shadow-sm border border-border/50 hover:border-primary/30 transition-colors">
+                  <div key={kit.id} className="flex gap-4 items-center p-3 rounded-2xl bg-card text-card-foreground shadow-sm border border-border/60 hover:border-primary/30 transition-colors">
                     <img src={kit.image} alt={kit.name} className="h-16 w-16 rounded-xl object-cover" />
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm truncate leading-tight mb-1">{kit.name}</p>
                       <p className="text-primary font-bold">{formatRupee(kit.price)}</p>
                     </div>
-                    <Button size="icon" className="h-10 w-10 rounded-full shadow-md"><ShoppingBag className="h-4 w-4" /></Button>
+                    <Button
+                      size="icon"
+                      className="h-10 w-10 rounded-full shadow-md"
+                      onClick={() => handleAddKitToCart(kit)}
+                    >
+                      <ShoppingBag className="h-4 w-4" />
+                    </Button>
                   </div>
                 ))}
               </div>
-              <Button className="w-full h-14 rounded-full text-lg shadow-lg">View Complete Bundle</Button>
+              <Button className="w-full h-14 rounded-full text-lg shadow-lg" onClick={handleAddBundleToCart}>
+                Add Complete Bundle to Cart
+              </Button>
             </CardContent>
           </Card>
 

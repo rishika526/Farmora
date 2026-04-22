@@ -18,6 +18,7 @@ import KitsPage from "@/pages/kits";
 import CreatorDashboard from "@/pages/creator";
 import FarmPlanPage from "@/pages/farm-plan";
 import CartPage from "@/pages/cart";
+import PoliciesPage from "@/pages/policies";
 import InfoPage from "@/pages/info-page";
 import { CartProvider } from "@/lib/cart";
 
@@ -37,6 +38,7 @@ function Router() {
           <Route path="/cart" component={CartPage} />
           <Route path="/creator" component={CreatorDashboard} />
           <Route path="/farm-plan" component={FarmPlanPage} />
+          <Route path="/policies" component={PoliciesPage} />
           <Route path="/community-guidelines">
             <InfoPage
               title="Community Guidelines"
