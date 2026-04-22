@@ -14,14 +14,14 @@ import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 
 const tutorialVideos: Record<string, string> = {
-  t1: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
-  t2: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4",
-  t3: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-  t4: "https://samplelib.com/lib/preview/mp4/sample-20s.mp4",
-  t5: "https://samplelib.com/lib/preview/mp4/sample-5mb.mp4",
-  t6: "https://samplelib.com/lib/preview/mp4/sample-10mb.mp4",
-  t7: "https://samplelib.com/lib/preview/mp4/sample-15mb.mp4",
-  t8: "https://samplelib.com/lib/preview/mp4/sample-20mb.mp4",
+  t1: "https://cdn.coverr.co/videos/coverr-gardening-day-1571/1080p.mp4",
+  t2: "https://cdn.coverr.co/videos/coverr-garden-plants-close-up-6315/1080p.mp4",
+  t3: "https://cdn.coverr.co/videos/coverr-plant-growth-time-lapse-1577/1080p.mp4",
+  t4: "https://cdn.coverr.co/videos/coverr-harvesting-fresh-vegetables-1653/1080p.mp4",
+  t5: "https://cdn.coverr.co/videos/coverr-watering-plants-1560/1080p.mp4",
+  t6: "https://cdn.coverr.co/videos/coverr-preparing-soil-1609/1080p.mp4",
+  t7: "https://cdn.coverr.co/videos/coverr-garden-bed-overview-8305/1080p.mp4",
+  t8: "https://cdn.coverr.co/videos/coverr-a-man-holding-a-plant-pot-5226/1080p.mp4",
 };
 
 export default function TutorialDetail() {
@@ -76,14 +76,12 @@ export default function TutorialDetail() {
                 <img src={tutorial.thumbnail} alt={tutorial.title} className="w-full h-full object-cover opacity-60" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Button
-                    className="h-14 px-6 rounded-full bg-background/90 text-foreground border border-white/50 backdrop-blur-md shadow-xl hover:bg-background hover:scale-[1.03] transition-all gap-2"
+                    size="icon"
+                    className="h-20 w-20 rounded-full bg-white/20 backdrop-blur-md hover:bg-white/30 text-white border-2 border-white/50 transition-transform hover:scale-110"
                     data-testid="button-play-video"
                     onClick={() => setIsPlaying(true)}
                   >
-                    <span className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center">
-                      <Play className="h-4 w-4 ml-0.5 fill-current" />
-                    </span>
-                    <span className="font-semibold">Watch Tutorial</span>
+                    <Play className="h-10 w-10 ml-2 fill-current" />
                   </Button>
                 </div>
                 {!videoSrc && (
@@ -95,11 +93,11 @@ export default function TutorialDetail() {
             ) : (
               <video
                 className="w-full h-full object-cover"
-                src={videoSrc}
                 controls
                 autoPlay
                 playsInline
                 poster={tutorial.thumbnail}
+                src={videoSrc}
                 data-testid="video-tutorial-player"
               />
             )}
