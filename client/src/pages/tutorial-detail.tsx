@@ -14,14 +14,14 @@ import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 
 const tutorialVideos: Record<string, string> = {
-  t1: "https://www.youtube.com/embed/RY432YI7SoE?autoplay=1&rel=0",
-  t2: "https://www.youtube.com/embed/tZJpo5N28zc?autoplay=1&rel=0",
+  t1: "https://www.youtube.com/embed/LKAUY31_q_s?autoplay=1&rel=0",
+  t2: "https://www.youtube.com/embed/VjxKkm9khJk?autoplay=1&rel=0",
   t3: "https://www.youtube.com/embed/uAMniWJm2vo?autoplay=1&rel=0",
-  t4: "https://www.youtube.com/embed/Jtw7pnqFeS4?autoplay=1&rel=0",
-  t5: "https://www.youtube.com/embed/Z5ozNM-Hb0w?autoplay=1&rel=0",
-  t6: "https://www.youtube.com/embed/EH6IBAsNZPE?autoplay=1&rel=0",
-  t7: "https://www.youtube.com/embed/LKAUY31_q_s?autoplay=1&rel=0",
-  t8: "https://www.youtube.com/embed/VjxKkm9khJk?autoplay=1&rel=0",
+  t4: "https://www.youtube.com/embed/EH6IBAsNZPE?autoplay=1&rel=0",
+  t5: "https://www.youtube.com/embed/Jtw7pnqFeS4?autoplay=1&rel=0",
+  t6: "https://www.youtube.com/embed/RY432YI7SoE?autoplay=1&rel=0",
+  t7: "https://www.youtube.com/embed/tZJpo5N28zc?autoplay=1&rel=0",
+  t8: "https://www.youtube.com/embed/Z5ozNM-Hb0w?autoplay=1&rel=0",
 };
 
 export default function TutorialDetail() {
