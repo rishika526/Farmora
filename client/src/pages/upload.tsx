@@ -28,7 +28,7 @@ export default function UploadPage() {
       if (p >= 100) {
         clearInterval(interval);
         setTimeout(() => {
-          setLocation("/tutorials/1"); // Redirect to a detail page
+          setLocation("/tutorials/t1"); // Redirect to a seeded detail page
         }, 500);
       }
     }, 100);

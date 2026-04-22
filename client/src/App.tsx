@@ -17,6 +17,9 @@ import AdvisorPage from "@/pages/advisor";
 import KitsPage from "@/pages/kits";
 import CreatorDashboard from "@/pages/creator";
 import FarmPlanPage from "@/pages/farm-plan";
+import CartPage from "@/pages/cart";
+import InfoPage from "@/pages/info-page";
+import { CartProvider } from "@/lib/cart";
 
 function Router() {
   return (
@@ -31,8 +34,27 @@ function Router() {
           <Route path="/upload" component={UploadPage} />
           <Route path="/advisor" component={AdvisorPage} />
           <Route path="/kits" component={KitsPage} />
+          <Route path="/cart" component={CartPage} />
           <Route path="/creator" component={CreatorDashboard} />
           <Route path="/farm-plan" component={FarmPlanPage} />
+          <Route path="/community-guidelines">
+            <InfoPage
+              title="Community Guidelines"
+              description="Be respectful and constructive. Share safe, evidence-based organic farming practices and avoid harmful or misleading claims."
+            />
+          </Route>
+          <Route path="/privacy-policy">
+            <InfoPage
+              title="Privacy Policy"
+              description="Farmora uses your activity data to improve recommendations and product experiences. We do not sell your personal data."
+            />
+          </Route>
+          <Route path="/terms-of-service">
+            <InfoPage
+              title="Terms of Service"
+              description="By using Farmora, you agree to use the platform responsibly and understand that educational content is not a substitute for professional agronomy advice."
+            />
+          </Route>
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -44,12 +66,14 @@ function Router() {
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </QueryClientProvider>
+      <CartProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </CartProvider>
     </ThemeProvider>
   );
 }
