@@ -14,14 +14,14 @@ import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 
 const tutorialVideos: Record<string, string> = {
-  t1: "https://cdn.coverr.co/videos/coverr-gardening-day-1571/1080p.mp4",
-  t2: "https://cdn.coverr.co/videos/coverr-garden-plants-close-up-6315/1080p.mp4",
-  t3: "https://cdn.coverr.co/videos/coverr-plant-growth-time-lapse-1577/1080p.mp4",
-  t4: "https://cdn.coverr.co/videos/coverr-harvesting-fresh-vegetables-1653/1080p.mp4",
-  t5: "https://cdn.coverr.co/videos/coverr-watering-plants-1560/1080p.mp4",
-  t6: "https://cdn.coverr.co/videos/coverr-preparing-soil-1609/1080p.mp4",
-  t7: "https://cdn.coverr.co/videos/coverr-garden-bed-overview-8305/1080p.mp4",
-  t8: "https://cdn.coverr.co/videos/coverr-a-man-holding-a-plant-pot-5226/1080p.mp4",
+  t1: "https://www.youtube.com/embed/RY432YI7SoE?autoplay=1&rel=0",
+  t2: "https://www.youtube.com/embed/tZJpo5N28zc?autoplay=1&rel=0",
+  t3: "https://www.youtube.com/embed/uAMniWJm2vo?autoplay=1&rel=0",
+  t4: "https://www.youtube.com/embed/Jtw7pnqFeS4?autoplay=1&rel=0",
+  t5: "https://www.youtube.com/embed/Z5ozNM-Hb0w?autoplay=1&rel=0",
+  t6: "https://www.youtube.com/embed/EH6IBAsNZPE?autoplay=1&rel=0",
+  t7: "https://www.youtube.com/embed/LKAUY31_q_s?autoplay=1&rel=0",
+  t8: "https://www.youtube.com/embed/VjxKkm9khJk?autoplay=1&rel=0",
 };
 
 export default function TutorialDetail() {
@@ -91,13 +91,13 @@ export default function TutorialDetail() {
                 )}
               </>
             ) : (
-              <video
-                className="w-full h-full object-cover"
-                controls
-                autoPlay
-                playsInline
-                poster={tutorial.thumbnail}
+              <iframe
+                className="w-full h-full"
                 src={videoSrc}
+                title={tutorial.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
                 data-testid="video-tutorial-player"
               />
             )}
