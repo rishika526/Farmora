@@ -108,17 +108,20 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="absolute top-8 -right-8 bg-card p-4 rounded-2xl shadow-xl border border-border/50 z-10 hidden md:block">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <Shuffle className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">AI Pick</p>
-                <p className="text-sm font-bold" data-testid="text-creator-of-day">{featuredCreator || "Creator of the Day"}</p>
+          <Link href="/creator">
+            <div className="absolute top-8 -right-8 bg-card p-4 rounded-2xl shadow-xl border border-border/50 z-10 hidden md:block cursor-pointer hover:shadow-2xl hover:-translate-y-0.5 transition-all">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <Shuffle className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">AI Pick</p>
+                  <p className="text-sm font-bold" data-testid="text-creator-of-day">{featuredCreator || "Creator of the Day"}</p>
+                  <p className="text-xs text-primary font-medium mt-0.5">View creator →</p>
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       </section>
 
