@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Leaf, ShieldCheck, Sparkles } from "lucide-react";
+import { Leaf, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AuthShellProps {
@@ -49,30 +49,6 @@ export default function AuthShell({ children, variant, eyebrow, title, subtitle 
             <p className={cn("text-lg leading-8 md:text-xl", isCreator ? "text-white/72" : "text-muted-foreground")}>
               {subtitle}
             </p>
-          </div>
-
-          <div
-            className={cn(
-              "hidden max-w-xl rounded-[2rem] border p-6 shadow-2xl backdrop-blur-xl lg:block",
-              isCreator ? "border-white/10 bg-white/10" : "border-white/70 bg-white/70"
-            )}
-          >
-            <div className="grid grid-cols-[auto_1fr] gap-4">
-              <div
-                className={cn(
-                  "flex h-12 w-12 items-center justify-center rounded-2xl",
-                  isCreator ? "bg-amber-300/20 text-amber-200" : "bg-primary/10 text-primary"
-                )}
-              >
-                <ShieldCheck className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="font-bold">Frontend-ready auth</p>
-                <p className={cn("mt-1 text-sm leading-6", isCreator ? "text-white/65" : "text-muted-foreground")}>
-                  Forms validate locally, remember your selected role, and are prepared for future backend API integration.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
 

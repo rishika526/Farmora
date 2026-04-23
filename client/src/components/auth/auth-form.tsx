@@ -11,9 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { FarmoraRole, persistSelectedRole } from "@/lib/auth-preferences";
+import { FarmoraRole, persistAuthSession, persistSelectedRole } from "@/lib/auth-preferences";
 
 type AuthMode = "login" | "signup";
 
@@ -26,7 +25,6 @@ const expertiseOptions = ["Compost", "Bio-pesticide", "Soil Health", "Planting",
 
 export default function AuthForm({ role, mode }: AuthFormProps) {
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [values, setValues] = useState({
@@ -98,27 +96,17 @@ export default function AuthForm({ role, mode }: AuthFormProps) {
     if (!validate()) return;
 
     setIsSubmitting(true);
-    persistSelectedRole(role);
+    persistAuthSession(role, values.email);
 
     window.setTimeout(() => {
       setIsSubmitting(false);
-      toast({
-        title: "Auth UI ready",
-        description: "This form is validated and ready to connect to the backend auth API.",
-      });
-    }, 650);
+      setLocation(role === "creator" ? "/creator" : "/");
+    }, 800);
   }
 
   function continueAsGuest() {
     persistSelectedRole("guest");
     setLocation("/");
-  }
-
-  function handleForgotPassword() {
-    toast({
-      title: "Password reset UI ready",
-      description: "This action is ready to connect to a password reset email endpoint.",
-    });
   }
 
   return (
@@ -214,7 +202,6 @@ export default function AuthForm({ role, mode }: AuthFormProps) {
         <button
           type="button"
           className={cn("font-semibold", isCreator ? "text-amber-200 hover:text-amber-100" : "text-primary")}
-          onClick={handleForgotPassword}
         >
           Forgot Password
         </button>
