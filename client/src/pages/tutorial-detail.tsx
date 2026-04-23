@@ -12,7 +12,6 @@ import QuantumDiscovery from "@/components/ui-custom/quantum-discovery";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 import TutorialVideoPlayer from "@/components/ui-custom/tutorial-video-player";
-import { tutorialVideos } from "@/lib/tutorial-videos";
 
 
 export default function TutorialDetail() {
@@ -36,7 +35,6 @@ export default function TutorialDetail() {
   }
 
   const relatedKits = allKits.slice(0, 2);
-  const videoUrl = tutorialVideos[id];
 
   function handleAddKitToCart(kit: (typeof relatedKits)[number]) {
     addToCart(kit);
@@ -60,7 +58,7 @@ export default function TutorialDetail() {
         {/* ── Main content ─────────────────────────────────────────────────── */}
         <div className="lg:col-span-2 space-y-8">
           {/* Video hero */}
-          <TutorialVideoPlayer title={tutorial.title} thumbnail={tutorial.thumbnail} videoUrl={videoUrl} />
+          <TutorialVideoPlayer title={tutorial.title} thumbnail={tutorial.thumbnail} videoUrl={tutorial.videoUrl} />
 
           {/* Title + meta */}
           <div className="space-y-4">
@@ -86,6 +84,7 @@ export default function TutorialDetail() {
             <div className="flex flex-wrap gap-2">
               <span className="px-4 py-1.5 rounded-full bg-muted/50 text-sm font-medium border border-border/50">{tutorial.category}</span>
               <span className="px-4 py-1.5 rounded-full bg-primary/5 text-primary text-sm font-bold border border-primary/20">{tutorial.difficulty}</span>
+              <span className="px-4 py-1.5 rounded-full bg-secondary/60 text-sm font-medium border border-border/40">{tutorial.language}</span>
               {tutorial.tags?.map(tag => (
                 <span key={tag} className="px-3 py-1 rounded-full bg-muted/30 text-xs font-medium text-muted-foreground border border-border/30">{tag}</span>
               ))}

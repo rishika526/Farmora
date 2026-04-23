@@ -61,6 +61,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  const { ensureDatabaseStructure } = await import("./db");
+  await ensureDatabaseStructure();
+
   const { registerRoutes } = await import("./routes");
   await registerRoutes(httpServer, app);
 

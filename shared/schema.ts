@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, text, varchar, integer, real, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { isSupportedTutorialVideoUrl } from "./video";
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -13,6 +14,7 @@ export const tutorials = pgTable("tutorials", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   thumbnail: text("thumbnail").notNull(),
+  videoUrl: text("video_url"),
   category: text("category").notNull(),
   duration: text("duration").notNull(),
   difficulty: text("difficulty").notNull(),
@@ -20,6 +22,7 @@ export const tutorials = pgTable("tutorials", {
   creator: text("creator").notNull(),
   tags: text("tags").array().notNull(),
   description: text("description"),
+  language: text("language").notNull().default("English"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -64,10 +67,27 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-export const insertTutorialSchema = createInsertSchema(tutorials).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertTutorialSchema = createInsertSchema(tutorials)
+  .omit({
+    id: true,
+    createdAt: true,
+    views: true,
+  })
+  .extend({
+    title: z.string().trim().min(3).max(160),
+    thumbnail: z.string().trim().min(1),
+    videoUrl: z
+      .string()
+      .trim()
+      .refine((value) => isSupportedTutorialVideoUrl(value), "Use a valid YouTube video link."),
+    category: z.string().trim().min(2).max(60),
+    duration: z.string().trim().regex(/^\d{1,2}:\d{2}$/, "Use MM:SS format."),
+    difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
+    creator: z.string().trim().min(2).max(120),
+    tags: z.array(z.string().trim().min(1)).min(1).max(10),
+    description: z.string().trim().max(2000).nullable().optional(),
+    language: z.string().trim().min(2).max(40).default("English"),
+  });
 
 export const insertKitSchema = createInsertSchema(kits).omit({
   id: true,

@@ -25,7 +25,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     const tutorial = await storage.getTutorial(req.params.id);
     if (!tutorial) return res.status(404).json({ message: "Tutorial not found" });
     await storage.incrementTutorialViews(req.params.id);
-    res.json(tutorial);
+    res.json({ ...tutorial, views: tutorial.views + 1 });
   });
 
   app.post("/api/tutorials", async (req, res) => {
