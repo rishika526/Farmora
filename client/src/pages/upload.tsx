@@ -3,7 +3,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Upload as UploadIcon, Check, Loader2 } from "lucide-react";
 import { createTutorial } from "@/lib/api";
-import { isSupportedTutorialVideoUrl } from "@/lib/video";
+import { isSupportedTutorialResourceUrl } from "@/lib/video";
+import { useFirebaseAuth } from "@/lib/firebase-auth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +32,7 @@ export default function UploadPage() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useFirebaseAuth();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -99,10 +101,10 @@ export default function UploadPage() {
       .map((tag) => tag.trim())
       .filter(Boolean);
 
-    if (!title || !creator) {
+    if (!title || !creator || !form.category || !videoUrl) {
       toast({
         title: "Missing basics",
-        description: "Add a tutorial title and creator name before uploading.",
+        description: "Add a title, category, creator name, and tutorial link before uploading.",
         variant: "destructive",
       });
       return;
@@ -117,10 +119,10 @@ export default function UploadPage() {
       return;
     }
 
-    if (!isSupportedTutorialVideoUrl(videoUrl)) {
+    if (!isSupportedTutorialResourceUrl(videoUrl)) {
       toast({
-        title: "Unsupported video link",
-        description: "Paste a valid YouTube watch, short, embed, or youtu.be link.",
+        title: "Link looks invalid",
+        description: "Paste a valid YouTube link or a normal article/resource URL.",
         variant: "destructive",
       });
       return;
@@ -142,6 +144,8 @@ export default function UploadPage() {
         thumbnail,
         tags: tags.length > 0 ? tags : [form.category.toLowerCase()],
         language: form.language,
+        submittedByEmail: user?.email || null,
+        submittedByName: user?.name || creator,
       });
 
       stopProgressAnimation();
@@ -153,12 +157,12 @@ export default function UploadPage() {
       ]);
 
       toast({
-        title: "Tutorial uploaded",
-        description: "Your new video is live and ready in the tutorials page.",
+        title: "Tutorial submitted for review",
+        description: "An admin can approve it from the dashboard before it appears publicly.",
       });
 
       window.setTimeout(() => {
-        setLocation(`/tutorials/${createdTutorial.id}`);
+        setLocation(`/creator`);
       }, 450);
     } catch (error) {
       stopProgressAnimation();
@@ -192,12 +196,12 @@ export default function UploadPage() {
                 <h3 className="font-medium text-lg">Publishing your tutorial...</h3>
                 <p className="text-sm text-muted-foreground">
                   {progress < 30
-                    ? "Saving video metadata..."
+                    ? "Saving tutorial details..."
                     : progress < 60
                       ? "Indexing tutorial content..."
                       : progress < 90
                         ? "Refreshing Farmora discovery..."
-                        : "Finalizing your tutorial page..."}
+                    : "Sending it to admin review..."}
                 </p>
               </div>
               <Progress value={progress} className="h-2" />
@@ -283,7 +287,7 @@ export default function UploadPage() {
                     <UploadIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <h3 className="font-medium mb-1">Paste your tutorial video link</h3>
                     <p className="text-sm text-muted-foreground">
-                      Farmora currently supports YouTube watch, short, embed, and youtu.be links.
+                      Farmora supports YouTube videos and helpful article/resource links.
                     </p>
                   </div>
 
@@ -291,7 +295,7 @@ export default function UploadPage() {
                     <Label htmlFor="video-url">Video URL</Label>
                     <Input
                       id="video-url"
-                      placeholder="https://www.youtube.com/watch?v=..."
+                      placeholder="https://www.youtube.com/watch?v=... or https://example.com/guide"
                       value={form.videoUrl}
                       onChange={(e) => updateField("videoUrl", e.target.value)}
                       required
@@ -362,7 +366,7 @@ export default function UploadPage() {
                   <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
                     <h4 className="font-medium text-primary">AI Analysis</h4>
                     <p className="text-xs text-muted-foreground">
-                      Farmora stores the new tutorial instantly, then uses your category, tags, and language to keep discovery and creator stats aligned.
+                      Farmora saves this as pending first. An admin reviews it before learners see it in Tutorials.
                     </p>
                   </div>
                 </div>

@@ -29,6 +29,11 @@ export interface Tutorial {
   tags: string[];
   description: string | null;
   language: string;
+  status: "pending" | "approved" | "rejected";
+  submittedByEmail: string | null;
+  submittedByName: string | null;
+  reviewedAt: string | null;
+  reviewedBy: string | null;
   createdAt: string | null;
 }
 
@@ -43,6 +48,21 @@ export interface CreateTutorialInput {
   tags: string[];
   description?: string | null;
   language?: string;
+  submittedByEmail?: string | null;
+  submittedByName?: string | null;
+}
+
+export interface FarmoraUser {
+  id: string;
+  email: string | null;
+  name: string | null;
+  photoUrl: string | null;
+  role: "admin" | "creator" | "user";
+}
+
+export interface AdminTutorialSummary {
+  counts: { total: number; pending: number; approved: number; rejected: number };
+  pending: Tutorial[];
 }
 
 export interface Kit {
@@ -192,13 +212,55 @@ export async function quantumRandomCreator() {
   return fetchJSON<{ creator: Creator | null; method: string }>(`${API_BASE}/quantum/random`);
 }
 
-export async function quantumFarmPlan(crop: string, days = 7) {
+export interface FarmPlanInput {
+  crop: string;
+  days?: number;
+  farmSize?: string;
+  soilType?: string;
+  goal?: string;
+  experienceLevel?: string;
+}
+
+export async function quantumFarmPlan(cropOrInput: string | FarmPlanInput, days = 7) {
+  const body = typeof cropOrInput === "string" ? { crop: cropOrInput, days } : cropOrInput;
   return fetchJSON<FarmPlan>(`${API_BASE}/quantum/farm-plan`, {
     method: "POST",
-    body: JSON.stringify({ crop, days }),
+    body: JSON.stringify(body),
   });
 }
 
 export async function createTutorial(data: CreateTutorialInput) {
   return fetchJSON<Tutorial>(`${API_BASE}/tutorials`, { method: "POST", body: JSON.stringify(data) });
+}
+
+export async function syncFirebaseUser(data: { email: string; name?: string | null; photoURL?: string | null; preferredRole?: "creator" | "user" }) {
+  return fetchJSON<FarmoraUser>(`${API_BASE}/auth/firebase`, { method: "POST", body: JSON.stringify(data) });
+}
+
+function adminHeaders(email?: string | null): Record<string, string> {
+  return email ? { "x-user-email": email } : {};
+}
+
+export function adminPendingTutorialsQuery(email?: string | null) {
+  return queryOptions({
+    queryKey: ["admin-pending-tutorials", email],
+    queryFn: () => fetchJSON<AdminTutorialSummary>(`${API_BASE}/admin/tutorials/pending`, { headers: adminHeaders(email) }),
+    enabled: !!email,
+  });
+}
+
+export async function approveTutorial(id: string, email?: string | null) {
+  return fetchJSON<Tutorial>(`${API_BASE}/admin/tutorials/${id}/approve`, { method: "PATCH", headers: adminHeaders(email) });
+}
+
+export async function rejectTutorial(id: string, email?: string | null) {
+  return fetchJSON<Tutorial>(`${API_BASE}/admin/tutorials/${id}/reject`, { method: "PATCH", headers: adminHeaders(email) });
+}
+
+export async function deleteTutorial(id: string, email?: string | null) {
+  const res = await fetch(`${API_BASE}/admin/tutorials/${id}`, { method: "DELETE", headers: adminHeaders(email) });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || `Request failed: ${res.status}`);
+  }
 }

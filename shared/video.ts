@@ -35,3 +35,15 @@ export function getYouTubeEmbedUrl(url?: string | null): string | null {
 export function isSupportedTutorialVideoUrl(url?: string | null): boolean {
   return getYouTubeEmbedUrl(url) !== null;
 }
+
+export function isSupportedTutorialResourceUrl(url?: string | null): boolean {
+  if (!url) return false;
+  if (isSupportedTutorialVideoUrl(url)) return true;
+
+  try {
+    const parsed = new URL(url.trim());
+    return ["http:", "https:"].includes(parsed.protocol) && parsed.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}

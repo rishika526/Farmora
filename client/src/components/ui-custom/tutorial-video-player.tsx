@@ -1,4 +1,4 @@
-import { AlertCircle, Play, Sparkles } from "lucide-react";
+import { AlertCircle, ExternalLink, Play, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,6 +42,18 @@ export default function TutorialVideoPlayer({
                   }}
                 >
                   <Play className="ml-1 h-10 w-10 fill-current" />
+                </Button>
+              </div>
+            ) : videoUrl ? (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Button
+                  asChild
+                  className="h-14 rounded-full border border-white/40 bg-white/20 px-6 text-white backdrop-blur-md hover:bg-white/30"
+                >
+                  <a href={videoUrl} target="_blank" rel="noreferrer">
+                    <ExternalLink className="mr-2 h-5 w-5" />
+                    Open resource
+                  </a>
                 </Button>
               </div>
             ) : (

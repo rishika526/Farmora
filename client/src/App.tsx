@@ -23,6 +23,8 @@ import InfoPage from "@/pages/info-page";
 import AuthRolePage from "@/pages/auth-role";
 import { CreatorLoginPage, CreatorSignupPage, UserLoginPage, UserSignupPage } from "@/pages/auth-form-page";
 import { CartProvider } from "@/lib/cart";
+import AdminPage from "@/pages/admin";
+import { FirebaseAuthProvider } from "@/lib/firebase-auth";
 
 function Router() {
   const [location] = useLocation();
@@ -42,6 +44,7 @@ function Router() {
           <Route path="/kits" component={KitsPage} />
           <Route path="/cart" component={CartPage} />
           <Route path="/creator" component={CreatorDashboard} />
+          <Route path="/admin" component={AdminPage} />
           <Route path="/farm-plan" component={FarmPlanPage} />
           <Route path="/login" component={AuthRolePage} />
           <Route path="/login/user" component={UserLoginPage} />
@@ -78,14 +81,16 @@ function Router() {
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <CartProvider>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </QueryClientProvider>
-      </CartProvider>
+      <QueryClientProvider client={queryClient}>
+        <FirebaseAuthProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+            </TooltipProvider>
+          </CartProvider>
+        </FirebaseAuthProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

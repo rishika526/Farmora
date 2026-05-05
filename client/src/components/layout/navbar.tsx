@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Sprout, Video, ShoppingBag, Brain, Upload, User, Menu, CalendarDays, LogIn, Crown } from "lucide-react";
+import { Sprout, Video, ShoppingBag, Brain, Upload, User, Menu, CalendarDays, LogIn, Crown, ShieldCheck, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -15,11 +15,13 @@ import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui-custom/theme-toggle";
 import { useCart } from "@/lib/cart";
 import { persistSelectedRole } from "@/lib/auth-preferences";
+import { useFirebaseAuth } from "@/lib/firebase-auth";
 
 export default function Navbar() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { itemCount } = useCart();
+  const { user, isAdmin, loading, loginWithGoogle, logout } = useFirebaseAuth();
 
   const navItems = [
     { href: "/", label: "Home", icon: Sprout },
@@ -28,6 +30,7 @@ export default function Navbar() {
     { href: "/kits", label: "Shop Kits", icon: ShoppingBag },
     { href: "/farm-plan", label: "Farm Planner", icon: CalendarDays },
     { href: "/creator", label: "Creator", icon: User },
+    ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
     { href: "/about", label: "About", icon: Sprout },
   ];
 
@@ -55,30 +58,61 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-2 rounded-full">
-                <LogIn className="h-4 w-4" />
-                Login
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 rounded-2xl p-2">
-              <DropdownMenuLabel>Continue with Farmora</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <Link href="/login/user" onClick={() => persistSelectedRole("user")}>
-                <DropdownMenuItem className="rounded-xl">
-                  <User className="h-4 w-4" />
-                  User Login
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2 rounded-full">
+                  {user.photoUrl ? <img src={user.photoUrl} alt="" className="h-5 w-5 rounded-full" /> : <User className="h-4 w-4" />}
+                  {user.name || user.email}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2">
+                <DropdownMenuLabel>{user.role === "admin" ? "Admin account" : "Farmora account"}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {isAdmin && (
+                  <Link href="/admin">
+                    <DropdownMenuItem className="rounded-xl">
+                      <ShieldCheck className="h-4 w-4" />
+                      Admin Dashboard
+                    </DropdownMenuItem>
+                  </Link>
+                )}
+                <DropdownMenuItem className="rounded-xl" onClick={logout}>
+                  <LogOut className="h-4 w-4" />
+                  Logout
                 </DropdownMenuItem>
-              </Link>
-              <Link href="/login/creator" onClick={() => persistSelectedRole("creator")}>
-                <DropdownMenuItem className="rounded-xl">
-                  <Crown className="h-4 w-4" />
-                  Creator Login
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2 rounded-full" disabled={loading}>
+                  <LogIn className="h-4 w-4" />
+                  Login
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2">
+                <DropdownMenuLabel>Continue with Farmora</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="rounded-xl" onClick={loginWithGoogle}>
+                  <LogIn className="h-4 w-4" />
+                  Google Gmail Login
                 </DropdownMenuItem>
-              </Link>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <Link href="/login/user" onClick={() => persistSelectedRole("user")}>
+                  <DropdownMenuItem className="rounded-xl">
+                    <User className="h-4 w-4" />
+                    User Login
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/login/creator" onClick={() => persistSelectedRole("creator")}>
+                  <DropdownMenuItem className="rounded-xl">
+                    <Crown className="h-4 w-4" />
+                    Creator Login
+                  </DropdownMenuItem>
+                </Link>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <Link href="/cart">
             <Button variant="outline" size="sm" className="rounded-full">
               Cart ({itemCount})
@@ -133,6 +167,10 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <div className="grid grid-cols-2 gap-2 px-4">
+                  <Button variant="outline" className="col-span-2 w-full rounded-full gap-2" onClick={() => { loginWithGoogle(); setIsOpen(false); }}>
+                    <LogIn className="h-4 w-4" />
+                    Google Gmail Login
+                  </Button>
                   <Link href="/login/user" onClick={() => { persistSelectedRole("user"); setIsOpen(false); }}>
                     <Button variant="outline" className="w-full rounded-full gap-2">
                       <User className="h-4 w-4" />

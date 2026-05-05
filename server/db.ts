@@ -35,8 +35,14 @@ export async function ensureDatabaseStructure() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
-      username TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL
+      username TEXT UNIQUE,
+      password TEXT,
+      email TEXT UNIQUE,
+      name TEXT,
+      photo_url TEXT,
+      role TEXT NOT NULL DEFAULT 'user',
+      updated_at TIMESTAMP DEFAULT NOW(),
+      created_at TIMESTAMP DEFAULT NOW()
     );
   `);
 
@@ -54,6 +60,11 @@ export async function ensureDatabaseStructure() {
       tags TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
       description TEXT,
       language TEXT NOT NULL DEFAULT 'English',
+      status TEXT NOT NULL DEFAULT 'approved',
+      submitted_by_email TEXT,
+      submitted_by_name TEXT,
+      reviewed_at TIMESTAMP,
+      reviewed_by TEXT,
       created_at TIMESTAMP DEFAULT NOW()
     );
   `);
@@ -102,13 +113,35 @@ export async function ensureDatabaseStructure() {
 
   await pool.query(`ALTER TABLE tutorials ADD COLUMN IF NOT EXISTS video_url TEXT;`);
   await pool.query(`ALTER TABLE tutorials ADD COLUMN IF NOT EXISTS language TEXT;`);
+  await pool.query(`ALTER TABLE tutorials ADD COLUMN IF NOT EXISTS status TEXT;`);
+  await pool.query(`ALTER TABLE tutorials ADD COLUMN IF NOT EXISTS submitted_by_email TEXT;`);
+  await pool.query(`ALTER TABLE tutorials ADD COLUMN IF NOT EXISTS submitted_by_name TEXT;`);
+  await pool.query(`ALTER TABLE tutorials ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMP;`);
+  await pool.query(`ALTER TABLE tutorials ADD COLUMN IF NOT EXISTS reviewed_by TEXT;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS photo_url TEXT;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP;`);
+  await pool.query(`ALTER TABLE users ALTER COLUMN username DROP NOT NULL;`);
+  await pool.query(`ALTER TABLE users ALTER COLUMN password DROP NOT NULL;`);
   await pool.query(`UPDATE tutorials SET language = 'English' WHERE language IS NULL;`);
+  await pool.query(`UPDATE tutorials SET status = 'approved' WHERE status IS NULL;`);
+  await pool.query(`UPDATE users SET role = 'user' WHERE role IS NULL;`);
+  await pool.query(`UPDATE users SET created_at = NOW() WHERE created_at IS NULL;`);
+  await pool.query(`UPDATE users SET updated_at = NOW() WHERE updated_at IS NULL;`);
   await pool.query(`ALTER TABLE tutorials ALTER COLUMN language SET DEFAULT 'English';`);
   await pool.query(`ALTER TABLE tutorials ALTER COLUMN language SET NOT NULL;`);
+  await pool.query(`ALTER TABLE tutorials ALTER COLUMN status SET DEFAULT 'approved';`);
+  await pool.query(`ALTER TABLE tutorials ALTER COLUMN status SET NOT NULL;`);
+  await pool.query(`ALTER TABLE users ALTER COLUMN role SET DEFAULT 'user';`);
+  await pool.query(`ALTER TABLE users ALTER COLUMN role SET NOT NULL;`);
   await pool.query(`UPDATE tutorials SET video_url = ${tutorialVideoBackfill} WHERE video_url IS NULL;`);
 
   await pool.query(`CREATE INDEX IF NOT EXISTS tutorials_created_at_idx ON tutorials (created_at DESC);`);
   await pool.query(`CREATE INDEX IF NOT EXISTS tutorials_creator_idx ON tutorials (creator);`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS tutorials_status_idx ON tutorials (status);`);
 
   schemaEnsured = true;
 }

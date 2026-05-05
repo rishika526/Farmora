@@ -12,13 +12,32 @@ import {
 } from "./quantum";
 import { quantumRelated } from "./graph";
 
+function getAdminEmails() {
+  return (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isAdminEmail(email?: string | null) {
+  return !!email && getAdminEmails().includes(email.toLowerCase());
+}
+
+function requireAdmin(req: any, res: any, next: any) {
+  const email = (req.headers["x-user-email"] as string | undefined) || req.query.adminEmail;
+  if (!isAdminEmail(email)) {
+    return res.status(403).json({ message: "Access denied" });
+  }
+  next();
+}
+
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
 
   // ── TUTORIALS ────────────────────────────────────────────────────────────────
   app.get("/api/tutorials", async (req, res) => {
     const category = req.query.category as string | undefined;
     const search = req.query.search as string | undefined;
-    res.json(await storage.getTutorials(category, search));
+    res.json(await storage.getTutorials(category, search, "approved"));
   });
 
   app.get("/api/tutorials/:id", async (req, res) => {
@@ -29,9 +48,66 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   app.post("/api/tutorials", async (req, res) => {
-    const parsed = insertTutorialSchema.safeParse(req.body);
+    const parsed = insertTutorialSchema.safeParse({
+      ...req.body,
+      status: "pending",
+    });
     if (!parsed.success) return res.status(400).json({ message: "Invalid data", errors: parsed.error.issues });
     res.status(201).json(await storage.createTutorial(parsed.data));
+  });
+
+  // ── AUTH ─────────────────────────────────────────────────────────────
+  app.post("/api/auth/firebase", async (req, res) => {
+    const email = typeof req.body?.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const preferredRole = req.body?.preferredRole === "creator" ? "creator" : "user";
+    const role = isAdminEmail(email) ? "admin" : preferredRole;
+    const user = await storage.upsertAuthUser({
+      email,
+      name: typeof req.body?.name === "string" ? req.body.name : null,
+      photoUrl: typeof req.body?.photoURL === "string" ? req.body.photoURL : null,
+      role,
+    });
+
+    res.json(user);
+  });
+
+  app.get("/api/auth/me", async (req, res) => {
+    const email = (req.headers["x-user-email"] as string | undefined)?.trim().toLowerCase();
+    if (!email) return res.status(401).json({ message: "Not signed in" });
+    const user = await storage.getUserByEmail(email);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  });
+
+  // ── ADMIN MODERATION ────────────────────────────────────────────────
+  app.get("/api/admin/tutorials/pending", requireAdmin, async (_req, res) => {
+    const [counts, pending] = await Promise.all([
+      storage.getTutorialStatusCounts(),
+      storage.getPendingTutorials(),
+    ]);
+    res.json({ counts, pending });
+  });
+
+  app.patch("/api/admin/tutorials/:id/approve", requireAdmin, async (req, res) => {
+    const reviewedBy = ((req.headers["x-user-email"] as string | undefined) || "admin").toLowerCase();
+    const tutorial = await storage.updateTutorialStatus(req.params.id, "approved", reviewedBy);
+    if (!tutorial) return res.status(404).json({ message: "Tutorial not found" });
+    res.json(tutorial);
+  });
+
+  app.patch("/api/admin/tutorials/:id/reject", requireAdmin, async (req, res) => {
+    const reviewedBy = ((req.headers["x-user-email"] as string | undefined) || "admin").toLowerCase();
+    const tutorial = await storage.updateTutorialStatus(req.params.id, "rejected", reviewedBy);
+    if (!tutorial) return res.status(404).json({ message: "Tutorial not found" });
+    res.json(tutorial);
+  });
+
+  app.delete("/api/admin/tutorials/:id", requireAdmin, async (req, res) => {
+    const deleted = await storage.deleteTutorial(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Tutorial not found" });
+    res.status(204).end();
   });
 
   // ── KITS ─────────────────────────────────────────────────────────────────────

@@ -1,1 +1,1 @@
-export { getYouTubeEmbedUrl, isSupportedTutorialVideoUrl } from "@shared/video";
+export { getYouTubeEmbedUrl, isSupportedTutorialResourceUrl, isSupportedTutorialVideoUrl } from "@shared/video";

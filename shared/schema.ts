@@ -2,12 +2,18 @@ import { sql } from "drizzle-orm";
 import { pgTable, text, varchar, integer, real, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { isSupportedTutorialVideoUrl } from "./video";
+import { isSupportedTutorialResourceUrl } from "./video";
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  username: text("username").unique(),
+  password: text("password"),
+  email: text("email").unique(),
+  name: text("name"),
+  photoUrl: text("photo_url"),
+  role: text("role").notNull().default("user"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const tutorials = pgTable("tutorials", {
@@ -23,6 +29,11 @@ export const tutorials = pgTable("tutorials", {
   tags: text("tags").array().notNull(),
   description: text("description"),
   language: text("language").notNull().default("English"),
+  status: text("status").notNull().default("approved"),
+  submittedByEmail: text("submitted_by_email"),
+  submittedByName: text("submitted_by_name"),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewedBy: text("reviewed_by"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -71,6 +82,8 @@ export const insertTutorialSchema = createInsertSchema(tutorials)
   .omit({
     id: true,
     createdAt: true,
+    reviewedAt: true,
+    reviewedBy: true,
     views: true,
   })
   .extend({
@@ -79,7 +92,7 @@ export const insertTutorialSchema = createInsertSchema(tutorials)
     videoUrl: z
       .string()
       .trim()
-      .refine((value) => isSupportedTutorialVideoUrl(value), "Use a valid YouTube video link."),
+      .refine((value) => isSupportedTutorialResourceUrl(value), "Use a valid YouTube or article/resource link."),
     category: z.string().trim().min(2).max(60),
     duration: z.string().trim().regex(/^\d{1,2}:\d{2}$/, "Use MM:SS format."),
     difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
@@ -87,6 +100,9 @@ export const insertTutorialSchema = createInsertSchema(tutorials)
     tags: z.array(z.string().trim().min(1)).min(1).max(10),
     description: z.string().trim().max(2000).nullable().optional(),
     language: z.string().trim().min(2).max(40).default("English"),
+    status: z.enum(["pending", "approved", "rejected"]).default("pending"),
+    submittedByEmail: z.string().trim().email().nullable().optional(),
+    submittedByName: z.string().trim().max(120).nullable().optional(),
   });
 
 export const insertKitSchema = createInsertSchema(kits).omit({
