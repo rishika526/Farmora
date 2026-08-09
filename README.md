@@ -144,14 +144,14 @@ npm run dev
 
 # 📸 Screenshots
 
-*(Add screenshots here)*
+<img width="944" height="482" alt="image" src="https://github.com/user-attachments/assets/52fbb5e2-4f00-476e-a537-0a40fe371c36" />
+<img width="959" height="521" alt="image" src="https://github.com/user-attachments/assets/9824e46b-6f50-4910-a6be-2a93ba7a7741" />
+<img width="944" height="485" alt="image" src="https://github.com/user-attachments/assets/51121f53-988e-4403-9195-e21ba57aada9" />
+<img width="945" height="489" alt="image" src="https://github.com/user-attachments/assets/caeffadc-6fac-4ecc-a1ff-7b70092e1b4d" />
+<img width="944" height="497" alt="image" src="https://github.com/user-attachments/assets/5034a4f7-786c-40d5-b414-8ecc36ab6331" />
+<img width="944" height="494" alt="image" src="https://github.com/user-attachments/assets/5e5d20ad-3a11-49cf-9267-5bd3c04381e9" />
+<img width="954" height="533" alt="image" src="https://github.com/user-attachments/assets/d9521b95-3cee-45e7-8fdc-539188d0d8bc" />
 
-- Home Page
-- User Login
-- Creator Login
-- Tutorials
-- Organic Kits
-- Dashboard
 
 ---
 
